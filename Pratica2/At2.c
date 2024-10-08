@@ -11,6 +11,7 @@ int R = 0, G=0, B = 0;
 
 void display(void);
 void corpo();
+void corpo_interior();
 void cabeca();
 void olho();
 void braco_esquerdo();
@@ -20,6 +21,8 @@ void perna_direita();
 void boca();
 void desenha_nuvem();
 void sol();
+void desenharGarra();
+void fogo();
 
 
 
@@ -40,6 +43,7 @@ int main(int argc, char** argv){
 
 void display(void){
     glClear(GL_COLOR_BUFFER_BIT); ////Limpa a janela de visualização com a cor de fundo especificada
+
     glBegin(GL_POLYGON);
     // Canto inferior esquerdo - Verde (R=0, G=255, B=0)
     glColor3ub(0, 255, 0);
@@ -58,13 +62,16 @@ void display(void){
     glVertex2f(1.0f, -1.0f);
     glEnd();
     corpo();
+    corpo_interior();
     cabeca();
     braco_esquerdo();
     braco_direito();
+    desenharGarra();
     perna_esquerda();
     perna_direita();
     sol();
     desenha_nuvem();
+    fogo();
 
 
     glutSwapBuffers();
@@ -98,7 +105,7 @@ void Circulo(float raio, float x0, float y0, int def, float graus, int r, int g,
     }
     glEnd();
 }
-void semi_Circulo(float raio, float x0, float y0, int def, float graus, int a, int b, int c)
+void semi_Circulo(float raio, float x0, float y0, int def, float graus, int r, int g, int b)
 {
     /* raio: define o tamanho do circulo.
         x0, y0: define a posição onde o circulo vai está.
@@ -110,22 +117,22 @@ void semi_Circulo(float raio, float x0, float y0, int def, float graus, int a, i
     float angulo = grausParaRadianos(0);
 
     glBegin(GL_POLYGON);
-    glColor3ub(a,b,c); // define a cor
+    glColor3ub(r,g,b); // define a cor
     for (int i = 0; i < def; i++)
     {
         x = raio * cos(angulo) + x0;
         y = raio * sin(angulo) + y0;
         glVertex2f(x, y);
-        glColor3ub(a, b, c); // define a cor
+        glColor3ub(r,g,b); // define a cor
 
         angulo += passo;
     }
     glEnd();
 };
-void torax()
+void torax(int r, int g, int b)
 {
     glBegin(GL_POLYGON);
-    glColor3ub(245, 245, 220); // Define a cor do tórax
+    glColor3ub(r,g,b); // Define a cor do tórax
 
     // Definindo os vértices 
     glVertex2f(0.300, 0.3);       // ponto A 
@@ -145,67 +152,56 @@ void corpo()
     glScalef(0.5, 0.5, 1.0);      
 
     // Desenhando o corpo 
-    semi_Circulo(0.3, 0.0, 0.3, 20, 200,240,255,255);
-    torax(); // Desenha o tórax
-    semi_Circulo(0.400, 0.0, -0.4, 20, -189.6240, 240, 255,255);
+    semi_Circulo(0.3, 0.0, 0.3, 20, 200,255,255,255);
+    torax(255,255,255); // Desenha o tórax
+    semi_Circulo(0.400, 0.0, -0.4, 20, -189.6240, 255, 255,255);
 
     glPopMatrix();  // Restaura a matriz de transformação anterior
 }
 
-/*void olho()
-{
+void corpo_interior(){
+    glPushMatrix();  // Salva a matriz de transformação atual
 
-    semi_Circulo_Olho(0.105, -0.10, 0.2, 30, 200, 0);
+    glScalef(0.4f, 0.4f, 0.4f);
+    glTranslatef(-1.25, 0.0, 0.0); // Move o corpo para a esquerda
 
-    glBegin(GL_POLYGON);
-    glColor3ub(133, 133, 133); // define a cor
-
-    glVertex2f(-0.120, 0.2);  // ponto A
-    glColor3ub(133, 133, 133); // define a cor
-    glVertex2f(-0.2, 0.17);   // ponto B
-    glColor3ub(255, 255, 255); // define a cor
-    glVertex2f(-0.04, 0.17);   // ponto C
-    glColor3ub(255, 255, 255); // define a cor
-    glVertex2f(-0.120, 0.28);  // ponto D
-    glEnd();
-
-    semi_Circulo_Olho(0.105, -0.10, 0.2, 30, -180, 0);
-
-    // desenha a pupila
-    Circulo(0.05, -0.13, 0.22, 20, 340);
-
-    semi_Circulo_Olho(0.105, 0.14, 0.28, 30, -200, 180);
-
-    glBegin(GL_POLYGON);
-    glColor3ub(133, 133, 133); // define a cor
-
-    glVertex2f(0.244, 0.26);   // ponto A
-    glColor3ub(133, 133, 133); // define a cor
-    glVertex2f(0.24, 0.17);    // ponto B
-    glColor3ub(255, 255, 255); // define a cor
-    glVertex2f(0.04, 0.17);    // ponto C
-    glColor3ub(255, 255, 255); // define a cor
-    glVertex2f(0.035, 0.28);   // ponto D
-    glEnd();
-
-    semi_Circulo_Olho(0.105, 0.14, 0.21, 30, 200, 180);
-
-    // desenha a pupila
-    Circulo(0.05, 0.13, 0.22, 20, 340);
+    // Desenhando o corpo 
+    semi_Circulo(0.3, 0.0, 0.3, 20, 200,100, 149, 220);
+    torax(100, 149, 220); // Desenha o tórax
+    semi_Circulo(0.400, 0.0, -0.4, 20, -189.6240, 100, 149, 220);
+    
+    glPopMatrix();  // Restaura a matriz de transformação anterior
 }
-*/
 
 void cabeca(){
     glPushMatrix();  // Salva a matriz de transformação atual
+    
+    glBegin(GL_POLYGON);
+    glColor3ub(0,0,0); 
+    glVertex2f(-0.50, 0.50f);    // Vértice inferior esquerdo
+    glVertex2f(-0.48, 0.50f);     // Vértice inferior direito
+    glVertex2f(-0.48f, 0.70f);     // Vértice superior direito
+    glVertex2f(-0.50, 0.70f);    // Vértice superior esquerdo
+    glEnd();
 
+    Circulo(0.02, -0.484, 0.72, 200,340, 255,0,0);
     // Aplicando as transformações para mover
     glTranslatef(-0.55, 0.0, 0.0); // Move a cabeça para a esquerda
     glScalef(0.4, 0.4, 1.0);  
-    Circulo(0.42, 0.160, 1.3, 200, 340, 255, 240, 245); // exterior da cabeça
-    Circulo(0.35, 0.170, 1.3, 200, 340, 128, 128, 128); // interior da cabeça
-    Circulo(0.06, 0.300, 1.4, 200, 340, 255, 255, 255); // olho esquerdo
-    Circulo(0.06, 0.110, 1.4, 200, 340, 255, 255, 255); // olho direito
+    Circulo(0.42, 0.160, 1.25, 200, 340, 255, 255, 255); // exterior da cabeça
+    Circulo(0.35, 0.170, 1.25, 200, 340, 100, 149, 220); // interior da cabeça
+    Circulo(0.06, 0.300, 1.35, 200, 340, 255, 255, 255); // olho esquerdo
+    Circulo(0.06, 0.110, 1.35, 200, 340, 255, 255, 255); // olho direito
     boca();
+
+    //pescoço
+    glBegin(GL_POLYGON);
+    glColor3ub(0,0,0); 
+    glVertex2f(0.11, 0.74f);    // Vértice inferior esquerdo
+    glVertex2f(0.15, 0.74f);     // Vértice inferior direito
+    glVertex2f(0.15f, 0.83f);     // Vértice superior direito
+    glVertex2f(0.11, 0.83f);    // Vértice superior esquerdo
+    glEnd();
 
     glPopMatrix();  // Restaura a matriz de transformação anterior
 
@@ -226,30 +222,26 @@ void braco_esquerdo( ) {
     glEnd();
 
     glPopMatrix();
-    semi_Circulo(0.04, -0.788, -0.18, 20, -200,200,255,200); // Desenha a parte inferior arredondada do braço
+    //semi_Circulo(0.04, -0.788, -0.18, 20, -200,200,255,200); // Desenha a parte inferior arredondada do braço
 }
-void braco_direito() { // falta alinhar os semicirculo
+void braco_direito() { 
     // Desenha a parte superior arredondada do braço
     
-    semi_Circulo(0.027, 0.377, 0.18, 20, 180, 200, 255, 200); // 180 graus para a parte superior
+    semi_Circulo(0.027, -0.315, 0.18, 20, 189, 200, 255, 200); 
   
     glPushMatrix();
     glTranslatef(0.55, 0.0, 0.0); // Move pra direita
-    //semi_Circulo(0.027, 0.377, 0.18, 20, 180, 200, 255, 200); // 180 graus para a parte superior
     // Desenha a parte retangular do braço
     glBegin(GL_QUADS);
     glColor3ub(200,255,200); // Cor do braço
     glVertex2f(-0.790f, -0.18f);    // Vértice inferior esquerdo
-    glVertex2f(-0.700f, -0.18f);     // Vértice inferior direito
-    glVertex2f(-0.890f, 0.18f);     // Vértice superior direito
-    glVertex2f(-0.830f, 0.18f);    // Vértice superior esquerdo
+    glVertex2f(-0.710f, -0.18f);     // Vértice inferior direito
+    glVertex2f(-0.840f, 0.18f);     // Vértice superior direito
+    glVertex2f(-0.893f, 0.18f);    // Vértice superior esquerdo
     glEnd();
-
-    
-    glTranslatef(-0.25, 0.0, 0.0); // Move pra direita
-    // Desenha a parte inferior arredondada do braço
-    semi_Circulo(0.04, 0.05, -0.18, 20, -180, 200, 255, 200); // 180 graus para a parte inferior
     glPopMatrix();
+
+   // semi_Circulo(0.04, -0.201, -0.18, 20, -200,200,255,200);
 } 
 
 void perna_esquerda() {
@@ -258,8 +250,8 @@ void perna_esquerda() {
     glColor3ub(255,255,255); // Cor da perna
     glVertex2f(-0.660f, -0.58f);    // Vértice inferior esquerdo
     glVertex2f(-0.600f, -0.58f);     // Vértice inferior direito
-    glVertex2f(-0.600f, -0.2f);     // Vértice superior direito
-    glVertex2f(-0.660f, -0.2f);    // Vértice superior esquerdo
+    glVertex2f(-0.600f, -0.3f);     // Vértice superior direito
+    glVertex2f(-0.660f, -0.3f);    // Vértice superior esquerdo
     glEnd();
 }
 
@@ -269,8 +261,8 @@ void perna_direita(){
     glColor3ub(255,255,255); // Cor da perna
     glVertex2f(-0.420f, -0.58f);    // Vértice inferior esquerdo
     glVertex2f(-0.360f, -0.58f);     // Vértice inferior direito
-    glVertex2f(-0.360f, -0.2f);     // Vértice superior direito
-    glVertex2f(-0.420f, -0.2f);    // Vértice superior esquerdo
+    glVertex2f(-0.360f, -0.3f);     // Vértice superior direito
+    glVertex2f(-0.420f, -0.3f);    // Vértice superior esquerdo
     glEnd();
 }
 
@@ -282,7 +274,7 @@ void boca()
     // Define o raio e a posição central do semicírculo
     float raio = 0.15;
     float x_centro = 0.2;
-    float y_centro = 1.2;
+    float y_centro = 1.1;
 
     // Define o número de pontos para o semicírculo
     int num_pontos = 30;
@@ -324,5 +316,88 @@ void sol(){
     Circulo(0.18f, 0.48f, 0.70f, 50, 360, 255, 255, 0); 
 }
 
+void desenharGarra() { 
+    //esquerda
+    glBegin(GL_POLYGON);
+    glColor3ub(0,0,0); 
+    glVertex2f(-0.820f, -0.20f);    // Vértice inferior esquerdo
+    glVertex2f(-0.760f, -0.20f);     // Vértice inferior direito
+    glVertex2f(-0.760f, -0.18f);     // Vértice superior direito
+    glVertex2f(-0.820f, -0.18f);    // Vértice superior esquerdo
+    glEnd();
+    // Desenhar a parte superior da garra
+    semi_Circulo(0.05, -0.795f, -0.25f, 50, 180, 169,169,169); // Parte superior arredondada da garra
 
+    // Desenhar a parte inferior da garra (semi-círculo invertido)
+    semi_Circulo(0.03,-0.795f, -0.25f, 50, 180, 0, 255, 150); // Parte inferior arredondada da garra
 
+    //direita
+    glBegin(GL_POLYGON);
+    glColor3ub(0,0,0); 
+    glVertex2f(-0.23f, -0.18f);    // Vértice inferior esquerdo
+    glVertex2f(-0.17f, -0.18f);     // Vértice inferior direito
+    glVertex2f(-0.17f, -0.20f);     // Vértice superior direito
+    glVertex2f(-0.23f, -0.20f);    // Vértice superior esquerdo
+    glEnd();
+    // Desenhar a parte superior da garra
+    semi_Circulo(0.05, -0.20f, -0.25f, 50, 180, 169,169,169); // Parte superior arredondada da garra
+
+    // Desenhar a parte inferior da garra (semi-círculo invertido)
+    semi_Circulo(0.03,-0.20f, -0.25f, 50, 180, 0, 255, 150); // Parte inferior arredondada da garra
+}
+
+void fogo() {
+    //direita
+    glBegin(GL_TRIANGLES);  // Primeira camada da chama
+
+    // Parte superior da chama - Vermelho (Agora o topo está acima)
+    glColor3ub(255, 0, 0);  // Vermelho
+    glVertex2f(-0.662f, -0.58f);  // Ponto esquerdo superior
+    glVertex2f(-0.600f, -0.58f);  // Ponto direito superior
+
+    // Parte inferior da chama - Amarelo
+    glColor3ub(255, 255, 0);  // Amarelo
+    glVertex2f(-0.635f, -0.78f);   // Ponto inferior (centro da chama)
+
+    glEnd();
+
+    glBegin(GL_TRIANGLES);  // Segunda camada da chama mais interna
+
+    // Parte superior da chama interna - Laranja (Topo da parte interna)
+    glColor3ub(255, 165, 0);  // Laranja
+    glVertex2f(-0.652f, -0.58f);  // Ponto esquerdo superior
+    glVertex2f(-0.614f, -0.58f);  // Ponto direito superior
+
+    // Parte inferior da chama interna - Amarelo claro (Centro inferior)
+    glColor3ub(255, 255, 100);  // Amarelo claro
+    glVertex2f(-0.635f, -0.75f);  // Ponto inferior (centro da chama interna)
+
+    glEnd();
+
+    //esquerda
+    glBegin(GL_TRIANGLES);  // Primeira camada da chama
+
+    // Parte superior da chama - Vermelho (Agora o topo está acima)
+    glColor3ub(255, 0, 0);  // Vermelho
+    glVertex2f(-0.420f, -0.58f);  // Ponto esquerdo superior
+    glVertex2f(-0.362f, -0.58f);  // Ponto direito superior
+    
+    // Parte inferior da chama - Amarelo 
+    glColor3ub(255, 255, 0);  // Amarelo
+    glVertex2f(-0.395f, -0.78f);   // Ponto inferior (centro da chama)
+
+    glEnd();
+
+    glBegin(GL_TRIANGLES);  // Segunda camada da chama mais interna
+
+    // Parte superior da chama interna - Laranja (Topo da parte interna)
+    glColor3ub(255, 165, 0);  // Laranja
+    glVertex2f(-0.410f, -0.58f);  // Ponto esquerdo superior
+    glVertex2f(-0.372f, -0.58f);  // Ponto direito superior
+    
+    // Parte inferior da chama interna - Amarelo claro (Centro inferior)
+    glColor3ub(255, 255, 100);  // Amarelo claro
+    glVertex2f(-0.395f, -0.75f);  // Ponto inferior (centro da chama interna)
+
+    glEnd();
+}
