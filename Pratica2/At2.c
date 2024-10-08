@@ -23,6 +23,7 @@ void desenha_nuvem();
 void sol();
 void desenharGarra();
 void fogo();
+void robo();
 
 
 
@@ -61,17 +62,10 @@ void display(void){
     glColor3ub(0, 255, 0);
     glVertex2f(1.0f, -1.0f);
     glEnd();
-    corpo();
-    corpo_interior();
-    cabeca();
-    braco_esquerdo();
-    braco_direito();
-    desenharGarra();
-    perna_esquerda();
-    perna_direita();
+    robo();
     sol();
     desenha_nuvem();
-    fogo();
+    
 
 
     glutSwapBuffers();
@@ -268,34 +262,18 @@ void perna_direita(){
 
 void boca()
 {
-    // Define a cor da boca
-    glColor3ub(255, 255, 255); 
-
-    // Define o raio e a posição central do semicírculo
-    float raio = 0.15;
-    float x_centro = 0.2;
-    float y_centro = 1.1;
-
-    // Define o número de pontos para o semicírculo
-    int num_pontos = 30;
-
-    // Calcula o ângulo de cada ponto no semicírculo
-    float angulo;
-    float passo_angulo = M_PI / num_pontos;
-
-    // Desenha o semicírculo da boca
     glBegin(GL_POLYGON);
-    for (int i = 0; i < num_pontos; i++)
-    {
-        angulo = (i * passo_angulo) + M_PI; // Ajusta o ângulo para começar de baixo
-        float x = x_centro + raio * cos(angulo);
-        float y = y_centro + raio * sin(angulo);
-        glVertex2f(x, y);
-    }
+    glColor3ub(255,255,255); 
+    glVertex2f(0.06, 1.02f);    // Vértice inferior esquerdo
+    glVertex2f(0.32, 1.02f);     // Vértice inferior direito
+    glVertex2f(0.32f, 1.1f);     // Vértice superior direito
+    glVertex2f(0.06, 1.1);    // Vértice superior esquerdo
     glEnd();
 }
 
 void desenha_nuvem() {
+    glPushMatrix();  // Salva a matriz de transformação atual
+    glTranslatef(-0.4, 0.0, 0.0); // Move a nuvem para a esquerda
     // Círculo maior central (centralizado no topo direito)
     Circulo(0.12f, 0.08f, 0.63f, 50, 360, 255, 255, 255); 
     // Círculo à esquerda
@@ -310,10 +288,14 @@ void desenha_nuvem() {
     Circulo(0.12f, 0.73f, 0.63f, 50, 360, 255, 255, 255); 
     // Círculo menor central inferior
     Circulo(0.12f, 0.85f, 0.63f, 50, 360, 255, 255, 255);
+    glPopMatrix();  // Restaura a matriz de transformação anterior
 
 }
 void sol(){
+    glPushMatrix();  // Salva a matriz de transformação atual
+    glTranslatef(-0.4, 0.0, 0.0); // Move o sol para a esquerda
     Circulo(0.18f, 0.48f, 0.70f, 50, 360, 255, 255, 0); 
+    glPopMatrix();  // Restaura a matriz de transformação anterior
 }
 
 void desenharGarra() { 
@@ -400,4 +382,20 @@ void fogo() {
     glVertex2f(-0.395f, -0.75f);  // Ponto inferior (centro da chama interna)
 
     glEnd();
+}
+
+void robo(){
+    glPushMatrix();  // Salva a matriz de transformação atual
+    glScaled(0.6, 0.6, 0.6);  // Escala o robô
+    glTranslatef(-0.55, 0.0, 0.0); // Move o robô para a esquerda
+    cabeca();
+    corpo();
+    corpo_interior();
+    braco_esquerdo();
+    braco_direito();
+    desenharGarra();
+    perna_esquerda();
+    perna_direita();
+    fogo();
+    glPopMatrix();  // Restaura a matriz de transformação anterior
 }
